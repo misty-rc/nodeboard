@@ -33,8 +33,12 @@ app.configure('production', function(){
 
 app.get('/', routes.index);
 app.get('/entry/:id', routes.view);
+
 app.get('/entry/:id/edit', routes.edit);
 app.put('/entry/:id/edit', routes.update);
+
+app.get('/entry/post', routes.post);
+app.post('/entry/post', routes.insert);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

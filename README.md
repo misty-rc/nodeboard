@@ -7,11 +7,19 @@ Installation
 ============
 
 ```
-npm install
+$ git clone https://misty-rc@github.com/misty-rc/nodeboard.git
+$ cd nodeboard
+$ npm install
+$ node app.js
 ```
 
 require
 -------
+ * node.js
+ * mongodb
 
+npm package
+-----------
  * express
  * jade
+ * mongoose
