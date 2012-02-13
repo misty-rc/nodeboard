@@ -28,3 +28,8 @@ exports.insert = function(req, res) {
 
 };
 
+exports.callback = function(req, res) {
+    //debug
+    res.render('callback');
+//    res.render('index');
+};
