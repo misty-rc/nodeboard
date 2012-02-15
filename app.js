@@ -5,54 +5,28 @@
 
 var express = require('express'),
     everyauth = require('everyauth'),
-    conf = require('./conf'),
+    mongooseAuth = require('mongoose-auth'),
+    conf = require('./conf.js'),
     routes = require('./routes');
+
+var User = require('./schema/User');
 
 //debug
 everyauth.debug = true;
-var usersById = {};
-var usersByGhId = {};
-var nextUserId = 0;
 
-function addUser (source, sourceUser) {
-    var user;
-    if (arguments.length === 1) { // password-based
-        user = sourceUser = source;
-        user.id = ++nextUserId;
-        return usersById[nextUserId] = user;
-    } else { // non-password-based
-        user = usersById[++nextUserId] = {id: nextUserId};
-        user[source] = sourceUser;
-    }
-    return user;
-}
-
-everyauth.everymodule
-    .findUserById( function (id, callback) {
-        callback(null, usersById[id]);
-    });
-
-everyauth.github
-    .appId(conf.github.appId)
-    .appSecret(conf.github.appSecret)
-    .callbackPath(conf.github.callbackPath)
-    .findOrCreateUser(function (sess, accessToken, accessTokenExtra, ghUser) {
-        return usersByGhId[ghUser.id] || (usersByGhId[ghUser.id] = addUser('github', ghUser));
-    })
-    .redirectPath('/');
-
-var app = express.createServer(
+var app = module.exports = express.createServer(
     express.bodyParser(),
     express.static(__dirname + '/public'),
     express.cookieParser(),
     express.session({secret: 'ronnsummer'}),
-    everyauth.middleware()
+    mongooseAuth.middleware()
 );
 
 // Configuration
-
 app.configure(function(){
+    app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
+    app.use(app.router);
 });
 
 app.configure('development', function(){
@@ -95,11 +69,27 @@ app.get('/', function(req, res) {
 });
 
 app.get('/callback', function(req, res) {
-    res.render('callback');
+    var https = require('https');
+    var options = {
+	host: 'api.github.com',
+	path: '/users/misty-rc/gists',
+	method: 'GET'
+    };
+    var client = https.request(options, function(res) {
+	var body = '';
+	res.on('data', function(data) {
+	    body += data;
+	});
+	res.on('end', function() {
+	    console.log(body);
+	});
+    });
+    client.end();
+    res.render('index');
 });
 
 //apply express
-everyauth.helpExpress(app);
+mongooseAuth.helpExpress(app);
 
 app.listen(3000, function() {
     console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

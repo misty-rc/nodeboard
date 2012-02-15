@@ -6,6 +6,7 @@
       "express": "2.5.8"
     , "jade": ">= 0.0.1"
     , "mongoose": ">= 2"
+    , "mongoose-auth": ">= 0.0.1"
     , "everyauth": ">= 0.2"
   }
 }
