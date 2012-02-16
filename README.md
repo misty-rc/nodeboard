@@ -27,3 +27,9 @@ npm package
  * everyauth
  * mongoose
  * mongoose-auth
+
+TODO
+----
+ * bootstrapのお手入れ
+ * mongooseのschema
+ * socket.ioを使ってリアルタイムチャット
