@@ -17,10 +17,11 @@ UserSchema.plugin(mongooseAuth, {
     },
     github: {
         everyauth: {
-            myHostname: 'http://182.48.60.151:3000',
-	    appId: conf.github.appId,
-	    appSecret: conf.github.appSecret,
-	    callbackPath: conf.github.callbackPath,
+	    myHostname: conf.github.myHostname,
+	    appId: conf.github.oauth.appId,
+	    appSecret: conf.github.oauth.appSecret,
+	    scope: 'user,public_repo,repo,gist',
+	    callbackPath: conf.github.oauth.callbackPath,
 	    redirectPath: '/'
         }
     }

@@ -1,34 +1,33 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express'),
     everyauth = require('everyauth'),
     mongooseAuth = require('mongoose-auth'),
+    RedisStore = require('connect-redis')(express),
     conf = require('./conf.js'),
     routes = require('./routes');
 
+// Schema
 var User = require('./schema/User');
 
-//debug
+// debug
 everyauth.debug = true;
-
-var app = module.exports = express.createServer(
-    express.bodyParser(),
-    express.static(__dirname + '/public'),
-    express.cookieParser(),
-    express.session({secret: 'ronnsummer'}),
-    mongooseAuth.middleware()
-);
+var app = module.exports = express.createServer();
 
 // Configuration
 app.configure(function(){
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
-    app.use(app.router);
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(express.cookieParser());
+    app.use(express.session({
+	secret: "it might as well be spring",
+	store: new RedisStore()
+    }));
+    app.use(mongooseAuth.middleware());
+    app.use(express.static(__dirname + '/public'));
 });
 
+// Environment
 app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
@@ -38,34 +37,14 @@ app.configure('production', function(){
 });
 
 // Routes
-/**
- * 
- * /entry/ => post
- * /entry/:id
- * /entry/:id/edit => get
- * /entry/:id/edit => post
- * /admin
- * /admin/setting
- * 
- */
 
-//トップ画面
-//app.get('/', routes.index);
-//
-////記事
-//app.get('/entry/:id', routes.view);
-//app.get('/entry/:id/edit', routes.edit);
-//app.put('/entry/:id/edit', routes.update);
-//
-////投稿（いらんかな）
-//app.get('/entry/new', routes.newpost);
-//app.post('/entry/new', routes.post);
-//
-////OAuth callback
-//app.get('callback', routes.callback);
-
+// test
 app.get('/', function(req, res) {
     res.render('index', {title: 'Express'});
+});
+
+app.get('/test', function(req, res) {
+    res.render('index', {title: 'Test'});
 });
 
 app.get('/callback', function(req, res) {
