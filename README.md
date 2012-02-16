@@ -13,13 +13,17 @@ $ npm install
 $ node app.js
 ```
 
-require
--------
+system required
+---------------
  * node.js
  * mongodb
+ * redis
 
 npm package
 -----------
  * express
  * jade
+ * connect-redis
+ * everyauth
  * mongoose
+ * mongoose-auth
