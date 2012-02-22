@@ -38,6 +38,9 @@ app.configure('production', function(){
 
 // Routes
 
+
+
+
 // test
 app.get('/', function(req, res) {
     res.render('index', {title: 'Express'});
@@ -45,26 +48,6 @@ app.get('/', function(req, res) {
 
 app.get('/test', function(req, res) {
     res.render('index', {title: 'Test'});
-});
-
-app.get('/callback', function(req, res) {
-    var https = require('https');
-    var options = {
-	host: 'api.github.com',
-	path: '/users/misty-rc/gists',
-	method: 'GET'
-    };
-    var client = https.request(options, function(res) {
-	var body = '';
-	res.on('data', function(data) {
-	    body += data;
-	});
-	res.on('end', function() {
-	    console.log(body);
-	});
-    });
-    client.end();
-    res.render('index');
 });
 
 //apply express

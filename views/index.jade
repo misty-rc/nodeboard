@@ -4,8 +4,15 @@
     a.close(data-dismiss="modal") x
     h3 LOGIN
   .modal-body
-    p 
-      a(href="/auth/github") sign in with Github
+    p
+      a.zocial.github(href="/auth/github")
+        span sign in with Github
+    p
+      a.zocial.twitter(href="/auth/twitter")
+        span sign in with Twitter
+    p
+      a.zocial.facebook(href="/auth/facebook")
+        span sign in with Facebook
   .modal-footer
     a.btn.btn-primary(href="#", data-dismiss="modal") Close
 
@@ -19,18 +26,33 @@
       a.brand Nodeboard
       .nav-collapse
         ul.nav
-          li.active
+          li
             a Chat
           li
             a Contact
           li
             a Library
-      - if (!everyauth.loggedIn)
-        p.navbar-text.pull-right
-          a(data-toggle="modal", href="#loginModal") Login
-      - else
-        p.navbar-text.pull-right
-          span= everyauth.github.user.name
+        - if (!everyauth.loggedIn)
+          p.navbar-text.pull-right
+            a(data-toggle="modal", href="#loginModal") Login
+        - else
+          ul.nav.pull-right
+            li.divider-vertical
+            li.dropdown
+              a(href="#", class="dropdown-toggle", data-toggle="dropdown")
+                - if (everyauth.twitter)
+                  span #{everyauth.twitter.user.name}
+                - if (everyauth.github)
+                  span #{everyauth.github.user.name}
+                - if (everyauth.facebook)
+                  span #{everyauth.facebook.user.name}
+                b.caret
+              ul.dropdown-menu
+                li
+                  a Settings
+                li.divider
+                li
+                  a(href="/logout") Logout
 
 .container-fluid
   .row-fluid
