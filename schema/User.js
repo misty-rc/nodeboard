@@ -15,20 +15,20 @@ UserSchema.plugin(mongooseAuth, {
             User: function() {
                 return User;
             },
-	        handleLogout: function(req, res) {
-		        req.logout();
-		        res.writeHead(303, {'Location': this.logoutRedirectPath()});
-		        res.end();
-	        }
+            handleLogout: function(req, res) {
+                req.logout();
+                res.writeHead(303, {'Location': this.logoutRedirectPath()});
+                res.end();
+            }
         }
     },
     facebook: {
-	    everyauth: {
-	        myHostname: conf.myHostname,
-	        appId: conf.facebook.oauth.appId,
-	        appSecret: conf.facebook.oauth.appSecret,
-	        scope: 'email,user_about_me',
-	        redirectPath: '/',
+        everyauth: {
+            myHostname: conf.myHostname,
+            appId: conf.facebook.oauth.appId,
+            appSecret: conf.facebook.oauth.appSecret,
+            scope: 'email,user_about_me',
+            redirectPath: '/',
             findOrCreateUser: function(session, accessTok, accessTokExtra, fbUser) {
                 var promise = this.Promise();
                 var User = this.User()();
@@ -44,14 +44,14 @@ UserSchema.plugin(mongooseAuth, {
                 });
                 return promise;
             }
-	    }
+        }
     },
     twitter: {
-	    everyauth: {
-	        myHostname: conf.myHostname,
-	        consumerKey: conf.twitter.oauth.consumerKey,
-	        consumerSecret: conf.twitter.oauth.consumerSecret,
-	        redirectPath: '/',
+        everyauth: {
+            myHostname: conf.myHostname,
+            consumerKey: conf.twitter.oauth.consumerKey,
+            consumerSecret: conf.twitter.oauth.consumerSecret,
+            redirectPath: '/',
             findOrCreateUser: function(session, accessTok, accessTokSecret, twitterUser) {
                 var promise = this.Promise(),
                     User = this.User()();
@@ -67,15 +67,15 @@ UserSchema.plugin(mongooseAuth, {
                 });
                 return promise;
             }
-	    }
+        }
     },
     github: {
         everyauth: {
-	        myHostname: conf.myHostname,
-	        appId: conf.github.oauth.appId,
-	        appSecret: conf.github.oauth.appSecret,
-	        scope: 'user,public_repo,repo,gist',
-	        redirectPath: '/',
+            myHostname: conf.myHostname,
+            appId: conf.github.oauth.appId,
+            appSecret: conf.github.oauth.appSecret,
+            scope: 'user,public_repo,repo,gist',
+            redirectPath: '/',
             findOrCreateUser: function(session, accessTok, accessTokExtra, ghUser) {
                 var promise = this.Promise(),
                     User = this.User()();
