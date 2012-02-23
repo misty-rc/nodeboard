@@ -1,4 +1,4 @@
-var Entry = require('../schema/entry.js');
+var Entry = require('../schema/Entry.js');
 
 exports.index = function(req, res) {
     res.render('index', { title: 'Express' });

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose'),
-    db = mongoose.connect('mongodb://localhost/nodeboard'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    ObjectId = mongoose.Schema.ObjectId;
 
 //comment schema
 var Comment = new Schema({
@@ -25,6 +25,7 @@ Entry.pre('save', function(next) {
 
 //register model
 mongoose.model('Entry', Entry);
+mongoose.connect('mongodb://localhost/nodeboard');
 
 //module exports
-module.exports = db.model('Entry');
+Entry = module.exports = mongoose.model('Entry');

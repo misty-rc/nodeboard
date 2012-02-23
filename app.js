@@ -20,8 +20,8 @@ app.configure(function(){
     app.use(express.methodOverride());
     app.use(express.cookieParser());
     app.use(express.session({
-	secret: "it might as well be spring",
-	store: new RedisStore()
+	    secret: "it might as well be spring",
+	    store: new RedisStore()
     }));
     app.use(mongooseAuth.middleware());
     app.use(express.static(__dirname + '/public'));
@@ -43,6 +43,14 @@ app.configure('production', function(){
 
 // test
 app.get('/', function(req, res) {
+    if(req.user) {
+        if(req.user.fb) {
+        }
+        else if(req.user.github) {
+        }
+        else if (req.user.twitter) {
+        }
+    }
     res.render('index', {title: 'Express'});
 });
 
