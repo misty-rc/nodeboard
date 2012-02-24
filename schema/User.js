@@ -4,10 +4,10 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.ObjectId;
 
-var UserSchema = new Schema({
-    displayName: {type:String, default: null}
-});
-var User;
+var User,
+    UserSchema = new Schema({
+        accessTok: {type:String, default:null}
+    });
 
 UserSchema.plugin(mongooseAuth, {
     everymodule: {
@@ -85,13 +85,8 @@ UserSchema.plugin(mongooseAuth, {
                     console.log('CREATE WITH GITHUB -override-');
                     User.createWithGithub(ghUser, accessTok, function(err, createUser) {
                         if(err) return promise.fail(err);
-                        // TEST
-                        //   ghUser.name -> schema.displayName -> session.displayName
-                        createUser.displayName = ghUser.name;
-                        createUser.save(function(err, moduser) {
-                            if(err) return promise.fail(err);
-                            return promise.fulfill(createUser);
-                        });
+                        Linkage
+                        return promise.fulfill(createUser);
                     });
                 });
                 return promise;

@@ -17,15 +17,7 @@ var Entry = new Schema({
     created_at: Date
 });
 
-//hook
-Entry.pre('save', function(next) {
-    //TODO:
-    next();
-});
-
-//register model
 mongoose.model('Entry', Entry);
 mongoose.connect('mongodb://localhost/nodeboard');
 
-//module exports
 Entry = module.exports = mongoose.model('Entry');

@@ -15,6 +15,18 @@
   .modal-footer
     a.btn.btn-primary(href="#", data-dismiss="modal") Close
 
+#settingModal.modal.fade.hide
+  .modal-header
+    a.close(data-dismiss="modal") x
+    h3 SETTING
+  .modal-body
+    p facebook
+      a.btn.btn-success Link
+    p github
+      a.btn.btn-danger Unlink
+  .modal-footer
+    a.btn.btn-primary(href="#", data-dismiss="modal") Close
+
 .navbar.navbar-fixed-top
   .navbar-inner
     .container-fluid
@@ -48,7 +60,7 @@
                 b.caret
               ul.dropdown-menu
                 li
-                  a Settings
+                  a(data-toggle="modal", href="#settingModal") Settings
                 li.divider
                 li
                   a(href="/logout") Logout
