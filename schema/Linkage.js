@@ -4,16 +4,18 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.ObjectId;
 
-var LinkAcc = new Schema({
-    module: {type:String, default:null},
-    linkid: {type:String, default:null}
+var LinkAccountSchema = new Schema({
+    serviceType: {type:String, default:null},
+    linkid: {type:ObjectId, default:null}
 });
 
-
 var Linkage = new Schema({
+    accountId: {type: String, default: null},
+    password: {type: String, default: null},
+    email: {type: String, default: null},
     displayName: {type:String, default: null},
     primaryService: {type:String, default:null},
-    linkage: [LinkAcc],
+    linkage: [LinkAccountSchema],
     bio: {type:String, default: null},
     setting: {
         test1: {type:Number, default: 0},

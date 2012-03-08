@@ -4,10 +4,18 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.ObjectId;
 
+// define schema
 var User,
     UserSchema = new Schema({
-        accessTok: {type:String, default:null}
+        accountId: {type: String, default: null},
+        email: {type: String, default: null},
+        displayName: {type: String, default: null},
+        serviceType: {type: String, default: null},
+        accessTok: {type: String, default:null}
     });
+
+// import Linkage schema
+var Linkage = require('./Linkage');
 
 UserSchema.plugin(mongooseAuth, {
     everymodule: {
@@ -55,15 +63,27 @@ UserSchema.plugin(mongooseAuth, {
             findOrCreateUser: function(session, accessTok, accessTokSecret, twitterUser) {
                 var promise = this.Promise(),
                     User = this.User()();
-                User.findOne({'twit.id': twitterUser.id}, function(err, foundUser) {
+                User.findOne({'twit.id': twitterUser.id}, function(err, _foundUser) {
                     if(err) return promise.fail(err);
-                    if(foundUser) return promise.fulfill(foundUser);
+                    if(_foundUser) return promise.fulfill(_foundUser);
+
                     console.log('CREATE WITH TWITTER -override-');
-                    User.createWithTwitter(twitterUser, accessTok, accessTokSecret, function(err, createUser) {
+                    User.createWithTwitter(twitterUser, accessTok, accessTokSecret, function(err, _createUser) {
                         if(err) return promise.fail(err);
-                        //TODO: create logic 'account link, schema'
-                        return promise.fulfill(createUser);
+
+                        _createUser.displayName = twitterUser.name;
+                        _createUser.accessTok = accessTok;
+                        _createUser.serviceType = conf.twitter.serviceType;
+                        _createUser.save(function(err) {
+                            if(err) return promise.fail(err);
+
+                            // check exist user-linkage 
+                            
+
+                        });
+                        return promise.fulfill(_createUser);
                     });
+                    return promise;
                 });
                 return promise;
             }
@@ -79,21 +99,80 @@ UserSchema.plugin(mongooseAuth, {
             findOrCreateUser: function(session, accessTok, accessTokExtra, ghUser) {
                 var promise = this.Promise(),
                     User = this.User()();
-                User.findOne({'github.id': ghUser.id}, function(err, foundUser) {
+                
+                User.findOne({'github.id': ghUser.id}, function(err, _foundUser) {
                     if(err) return promise.fail(err);
-                    if(foundUser) return promise.fulfill(foundUser);
+
+                    // exist user
+                    if(_foundUser) {
+                        // find linkage
+
+                        // 1. exist service 
+                        var query = Linkage.find({});
+                        query.where('linkage').elemMatch(function(elem){
+                            elem.where('serviceType', _foundUser.serviceType);
+                            elem.where('linkid', _foundUser._id);
+                        });
+                        query.exec(function(err, docs) {
+                            if(!err) {
+                                debugger;
+                                session.linkage.accountId = docs.acountId;
+                            }
+                        });
+
+                        // 2. exist email
+                        
+
+                        return promise.fulfill(_foundUser);
+                    } else {
+                        // throw exception <- not exist linkage;
+                    }
+
+                    // not exist user
                     console.log('CREATE WITH GITHUB -override-');
-                    User.createWithGithub(ghUser, accessTok, function(err, createUser) {
+                    User.createWithGithub(ghUser, accessTok, function(err, _createUser) {
                         if(err) return promise.fail(err);
-                        Linkage
-                        return promise.fulfill(createUser);
+
+                        _createUser.displayName = ghUser.name;
+                        _createUser.accessTok = accessTok;
+                        _createUser.serviceType = conf.github.serviceType;
+                        _createUser.save(function(err) {
+                            if(err) return promise.fail(err);
+
+                            // TODO: check exist user-linkage
+                            var query = Linkage.find({});
+                            query.where('linkage').elemMatch(function(elem) {
+                                elem.where('serviceType', 'github');
+                                elem.where('linkid', _createUser._id);
+                            });
+                            query.exec(function(err, docs) {
+                                console.log(docs);
+                            });
+
+                            // create linkage
+                            var _linkage = new Linkage();
+                            _linkage.displayName = ghUser.name;
+                            _linkage.primaryService = conf.github.serviceType;
+                            _linkage.linkage.push({serviceType: 'github', linkid: _createUser._id});
+
+                            _linkage.save(function(err) {
+                                if(err) return promise.fail(err);
+                                return promise.fulfill(_createUser);
+                            });
+                            return promise;
+                        });
+                        return promise;
                     });
+                    return promise;
                 });
                 return promise;
             }
         }
     }
 });
+
+
+
 
 mongoose.model('User', UserSchema);
 mongoose.connect('mongodb://localhost/nodeboard');

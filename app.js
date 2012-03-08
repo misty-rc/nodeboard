@@ -38,9 +38,6 @@ app.configure('production', function(){
 
 // Routes
 
-
-
-
 // test
 app.get('/', function(req, res) {
     if(req.user) {
