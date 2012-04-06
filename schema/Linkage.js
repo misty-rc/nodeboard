@@ -11,10 +11,8 @@ var LinkAccountSchema = new Schema({
 
 var Linkage = new Schema({
     accountId: {type: String, default: null},
-    password: {type: String, default: null},
     email: {type: String, default: null},
     displayName: {type:String, default: null},
-    primaryService: {type:String, default:null},
     linkage: [LinkAccountSchema],
     bio: {type:String, default: null},
     setting: {

@@ -37,17 +37,10 @@ app.configure('production', function(){
 });
 
 // Routes
+app.get('/twitter', routes.twitter);
 
 // test
 app.get('/', function(req, res) {
-    if(req.user) {
-        if(req.user.fb) {
-        }
-        else if(req.user.github) {
-        }
-        else if (req.user.twitter) {
-        }
-    }
     res.render('index', {title: 'Express'});
 });
 
